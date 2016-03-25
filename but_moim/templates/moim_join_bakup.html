@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form
+    method="POST"
+    action="{% url 'moim_join' %}"
+    enctype="multipart/form-data"
+    >
+
+    {% csrf_token %}
+     {{form.as_p}}
+     {{form2.as_p}}
+    <input type="submit" value="OK">
+
+
+
+    <p>가입하는 페이지</p>
+
+
+
+
+
+
+
+
+
+    {% comment %}
+
+     <div><span>유저: </span>
+     <input type="text" name="f" value=""></div>
+
+     <div><span>모임 이름: </span>
+     <input type="text" name="moim_name" value=""></div>
+
+     <div><span>입금 날짜: </span>
+     <input type="text" name="moim_deposit_date" value=""></div>
+
+     <div><span>계좌 주인: </span>
+     <input type="text" name="moim_account_name" value=""></div>
+
+     <div><span>입금 은행: </span>
+     <input type="text" name="moim_account_bank" value=""></div>
+
+     <div><span>계좌 번호: </span>
+     <input type="text" name="moim_account_num" value=""></div>
+
+     <div><span>모임 심볼: </span>
+     <input type="file" name="moim_symbol" value=""></div>
+
+
+    <input type="hidden" name="moim_user" value=""></div>
+
+    <p>사용자 : {{ user_name.get_full_name}}</p>
+    <p>가입모임</p>
+    {% for Moim_name in user_info %}
+      <li><a href="/moim_detail/{{ Moim_name.moim_name.moim_name }} ">{{ Moim_name.moim_name.moim_name }}</a></li>
+
+    {% empty %}
+    <li>가입한 모임이 없습니다.</li>
+    {% endfor %}
+
+    <!-- {% comment %} 템플릿 태그는 템플릿의 블록 주석입니다. -->
+    <!-- 이 템플릿 g
+
+    그 안에 있는 모든 내용은 화면에 출력되지 앟습니다. -->
+
+    {% for field in form %}
+    <p>
+        {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {{field}}
+    </p>
+    {% endfor %}
+    {% endcomment %}
+
+</form>
+{% endblock %}

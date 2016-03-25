@@ -1,0 +1,1013 @@
+{% extends 'layout.html' %}
+{% load staticfiles %}
+{% block content %}
+    <script>
+        window.onkeydown = function() {
+            var kcode = event.keyCode;
+            if(kcode == 116) event.returnValue = false;
+        }
+    </script>
+    <span class="hidden"id="deposit_amount">{{ deposit_amount.deposit_amount }}</span>
+
+    {% if Manager == 'True' %}
+        <div class="container">
+        <div class="row">
+            <div id="moim_name" class="btn col-xs-12" style="display: inline-block;text-align: center; background : cadetblue">
+                <div id = 'moim_name'class="col-xs-12" style="height: 40px; line-height: 40px">{{ moim_name}}</div>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-8 boder_first" style=" display: inline-block;text-align: left; background : black">
+                    <div style=" color:whitesmoke; height: 33px; line-height: 33px">TOTAL {{ moim_info.moim_total_money2 }}</div>
+                </div>
+                <div class="col-xs-4 btn btn-success" data-toggle="modal" data-target="#Btn_notice_modal" id="Btn_notice">
+                    공지
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-12 " style="display: inline-block;text-align: center; background : dimgrey">
+                    <div style=" color:whitesmoke; height: 40px; line-height: 40px"><!-- A05 수입지출 계산금액  -->
+                        <span class="glyphicon glyphicon-user" style="color: #080808; font-size: large"></span>{{ month_money }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-plus-sign" style="color: red; font-size: large"></span>{{ add_money_month }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-minus-sign" style="color: blue; font-size: large"></span>{{ month_consume_money }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-ok-circle" style="color: #f0ad4e; font-size: large"></span>합계:{{ month_plus_add_money }}&nbsp;&nbsp;
+                    </div>
+                </div>
+
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="col-xs-4 btn btn-primary" id="suib_click" data-toggle="modal" data-target="#add_money_btn_modal">
+                    수입
+                </button>
+                <button class="col-xs-4 btn btn-primary" id ='jichul_click' data-toggle="modal" data-target="#consume_money_btn_modal">
+                    지출
+                </button>
+                <button class="col-xs-4 btn btn-primary" id = 'minab_mem_click'>
+                    미납 멤버
+                </button>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                    {{ add_money_count }}
+                </div>
+                <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                    {{ consume_money_count }}
+                </div>
+                {% if no_money_count == 0 %}
+                    <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                        <label class="glyphicon glyphicon-heart" style="color: #f1a417; font-size: 15px"></label>
+                    </div>
+                {% else %}
+                    <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                        {{ no_money_count }}
+                    </div>
+                {% endif %}
+
+
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-xs-12" style="text-align: center">
+                <div class="col-xs-4">
+                    <form action="/moim_detail_post/"
+                          method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-info" style="height: 50px; width: 90px" id="BtnDateMinus" ><<</button>
+                        <input type="hidden" value="{{ TodayM}}" name="TodayM">
+                        <input type="hidden" value="{{ moim_name}}" name="moim_name">
+                        <input type="hidden" value="<<" name="arrow">
+                    </form>
+                </div>
+                <div class="col-xs-4">
+                    <button class=" btn btn-info" style="height: 50px; width: 90px" id = "BtnDate" data-toggle="modal" data-target="#myModal">{{ TodayM }}</button> <!--모달 -->
+                    <!-- Modal -->
+                </div>
+                <div class="col-xs-4">
+                    <form action="/moim_detail_post/"
+                          method="post"
+                          id="post_form">
+                        {% csrf_token %}
+                        <button class=" btn btn-info" style="height: 50px; width: 90px" id="BtnDatePlus">>></button>
+                        <input id="post_name" type="hidden" value="null" name="name">
+                        <input id="post_TodayM" type="hidden" value="{{ TodayM}}" name="TodayM">
+                        <input id="post_moim_name" type="hidden" value="{{ moim_name}}" name="moim_name">
+                        <input id="post_arrow" type="hidden" value=">>" name="arrow">
+                    </form>
+                </div>
+            </div>
+        </div><br>
+
+        <div class="row" style="text-align: center">
+            <div class="col-xs-12" style="text-align: center">
+                <div class="col-xs-3 ">
+                    <label class="label-default A001">이름</label>
+                </div>
+                <div class="col-xs-3">
+                    <label class="label-default A001">입금일</label>
+                </div>
+                <div class="col-xs-3">
+                   <label class="label-default A001">금액</label>
+                </div>
+                <div class="col-xs-3">
+                    <label class="label-default A001">납부확인</label>
+                </div>
+            </div>
+        </div>
+
+        {% for Moim_name in deposit_infor %}
+            <div class="row detail-row">
+                <div class="col-xs-12" style="text-align: center">
+
+                    <div class="col-xs-3 ">
+                        <label class="label-primary A001 name">{{ Moim_name.user_name.user_name }}</label>
+                    </div>
+
+                    <div class="col-xs-3"><!-- 입금일-->
+                        {% if Moim_name.deposit_yse_no == True %}
+                           <label class="label-primary A001" style="font-size: 12px ;height: 22px; line-height: 22px" >{{ Moim_name.deposit_date_Day }}</label>
+                        {% else %}
+                          <label class="label-primary A001" style="font-size: 12px ;height: 22px; line-height: 22px">X</label>
+                        {% endif %}
+                    </div>
+                    <input type="hidden" class="amount_date_val" value="{{ Moim_name.deposit_date_Day }}">
+                    <input type="hidden" class="amount_span_val" value="{{ Moim_name.deposit_amount }}">
+                    <input type="hidden" class="mod_pk_val" value="{{ Moim_name.pk }}">
+
+                    <div class="col-xs-3">
+                        {% if Moim_name.deposit_yse_no == True %}
+                            <label class="label-info A001 amount_span">{{ Moim_name.deposit_amount }}</label>
+                        {% else %}
+                            <label class="label-info A001 amount_span">미납</label>
+                        {% endif %}
+
+                    </div>
+                    <!-- 납부버튼-->
+                    <div class="col-xs-3">
+                        {% if Moim_name.deposit_yse_no == True %}
+                            <button class=" btn-danger amount_button "  id="mod_button_click" data-toggle="modal" data-target="#mod_click" >수정</button>
+                        {% else %}
+                            <button class=" btn-default amount_button" id="nabu_button">납부</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% if User   == 'True' %}
+<div class="container">
+        <div class="row">
+            <div id="moim_name" class="btn col-xs-12" style="display: inline-block;text-align: center; background : cadetblue">
+                <div id = 'moim_name' style="height: 40px; line-height: 40px">{{ moim_name}}</div>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-8 boder_first" style=" display: inline-block;text-align: left; background : black">
+                    <div style=" color:whitesmoke; height: 33px; line-height: 33px">TOTAL {{ moim_info.moim_total_money2 }}</div>
+                </div>
+                <div class="col-xs-4 btn btn-success" data-toggle="modal" data-target="#Btn_notice_modal" id="Btn_notice">
+                    공지
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-12 " style="display: inline-block;text-align: center; background : dimgrey">
+                    <div style=" color:whitesmoke; height: 40px; line-height: 40px"><!-- A05 수입지출 계산금액  -->
+                        <span class="glyphicon glyphicon-user" style="color: #080808; font-size: large"></span>{{ month_money }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-plus-sign" style="color: red; font-size: large"></span>{{ add_money_month }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-minus-sign" style="color: blue; font-size: large"></span>{{ month_consume_money }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-ok-circle" style="color: #f0ad4e; font-size: large"></span>합계:{{ month_plus_add_money }}&nbsp;&nbsp;
+                    </div>
+                </div>
+
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="col-xs-4 btn btn-primary" id="suib_click" data-toggle="modal" data-target="#add_money_btn_modal">
+                    수입
+                </button>
+                <button class="col-xs-4 btn btn-primary" id ='jichul_click' data-toggle="modal" data-target="#consume_money_btn_modal">
+                    지출
+                </button>
+                <button class="col-xs-4 btn btn-primary" id = 'minab_mem_click'>
+                    미납 멤버
+                </button>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                    {{ add_money_count }}
+                </div>
+                <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                    {{ consume_money_count }}
+                </div>
+                {% if no_money_count == 0 %}
+                    <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                        <label class="glyphicon glyphicon-heart" style="color: #f1a417; font-size: 15px"></label>
+                    </div>
+                {% else %}
+                    <div class="col-xs-4 boder_first" style="display: inline-block;text-align: center; background : beige; height: 40px; line-height: 40px">
+                        {{ no_money_count }}
+                    </div>
+                {% endif %}
+
+
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-xs-12" style="text-align: center">
+                <div class="col-xs-4">
+                    <form action="/moim_detail_post/"
+                          method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-info" style="height: 50px; width: 90px" id="BtnDateMinus" ><<</button>
+                        <input type="hidden" value="{{ TodayM}}" name="TodayM">
+                        <input type="hidden" value="{{ moim_name}}" name="moim_name">
+                        <input type="hidden" value="<<" name="arrow">
+                    </form>
+                </div>
+                <div class="col-xs-4">
+                    <button class=" btn btn-info" style="height: 50px; width: 90px" id = "BtnDate" data-toggle="modal" data-target="#myModal">{{ TodayM }}</button> <!--모달 -->
+                    <!-- Modal -->
+                </div>
+                <div class="col-xs-4">
+                    <form action="/moim_detail_post/"
+                          method="post"
+                          id="post_form">
+                        {% csrf_token %}
+                        <button class=" btn btn-info" style="height: 50px; width: 90px" id="BtnDatePlus">>></button>
+                        <input id="post_name" type="hidden" value="null" name="name">
+                        <input id="post_TodayM" type="hidden" value="{{ TodayM}}" name="TodayM">
+                        <input id="post_moim_name" type="hidden" value="{{ moim_name}}" name="moim_name">
+                        <input id="post_arrow" type="hidden" value=">>" name="arrow">
+                    </form>
+                </div>
+            </div>
+        </div><br>
+
+        <div class="row" style="text-align: center">
+            <div class="col-xs-12" style="text-align: center">
+                <div class="col-xs-4 ">
+                    <label class="label-default A001">이름</label>
+                </div>
+                <div class="col-xs-4">
+                    <label class="label-default A001">입금일</label>
+                </div>
+                <div class="col-xs-4">
+                   <label class="label-default A001">금액</label>
+                </div>
+            </div>
+        </div>
+
+        {% for Moim_name in deposit_infor %}
+            <div class="row detail-row">
+                <div class="col-xs-12" style="text-align: center">
+
+                    <div class="col-xs-4 ">
+                        <label class="label-primary A001 name">{{ Moim_name.user_name.user_name }}</label>
+                    </div>
+
+                    <div class="col-xs-4"><!-- 입금일-->
+                        {% if Moim_name.deposit_yse_no == True %}
+                           <label class="label-primary A001">{{ Moim_name.deposit_date_Day }}</label>
+                        {% else %}
+                          <label class="label-primary A001">X</label>
+                        {% endif %}
+                    </div>
+                    <input type="hidden" class="amount_date_val" value="{{ Moim_name.deposit_date_Day }}">
+                    <input type="hidden" class="amount_span_val" value="{{ Moim_name.deposit_amount }}">
+                    <input type="hidden" class="mod_pk_val" value="{{ Moim_name.pk }}">
+
+                    <div class="col-xs-4">
+                        {% if Moim_name.deposit_yse_no == True %}
+                            <label class="label-info A001 amount_span">{{ Moim_name.deposit_amount }}</label>
+                        {% else %}
+                            <label class="label-info A001 amount_span">미납</label>
+                        {% endif %}
+
+                    </div>
+                    <!-- 납부버튼-->
+                </div>
+            </div>
+        {% endfor %}
+{% endif %}
+
+
+
+{% if Manager == 'True' %}<!-- 모달 정리 -->
+    <!-- A0402-modal -->
+    <div class="modal fade" id="mod_click" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title nabusujung" id="myModalLabel">납부 수정</h4>
+                </div>
+                <div class="modal-body" style="text-align: center">
+                    <div class="container"  >
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4 btn glyphicon glyphicon-plus" id="mod_year_plus"></div>
+                                <div class="col-xs-4 btn glyphicon glyphicon-plus" id="mod_month_plus"></div>
+                                <div class="col-xs-4 btn glyphicon glyphicon-plus" id="mod_day_plus"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4" id="mod_year_val"></div>
+                                <div class="col-xs-4" id="mod_month_val"></div>
+                                <div class="col-xs-4" id="mod_day_val"></div>
+                                <!--<div class="col-xs-4" style="text-align: left"><button class="btn btn-xs" id="dangwol" style="color: red" >당월</button></div>-->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4 btn glyphicon glyphicon-minus" id="mod_year_minus"></div>
+                                <div class="col-xs-4 btn glyphicon glyphicon-minus" id="mod_month_minus"></div>
+                                <div class="col-xs-4 btn glyphicon glyphicon-minus" id="mod_day_minus"></div>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form action="/moim_detail_post/" method="post" id="mod_form">
+                                    {% csrf_token %}
+                                    <div class="form-group row">
+                                        <label class="col-xs-2 form-control-static">금액</label>
+                                        <div class="col-xs-10">
+                                            <input class="form-control" value="" required="True" name="mod_amount_input" type="text" id="mod_amount_input_id" placeholder="금액">
+                                            <input class="" type="hidden" name="mod_pk" value="" id="mod_pk_id">
+                                            <input class="" type="hidden" name="arrow" value="mod_arrow" id="mod_arrow">
+                                            <input class="" type="hidden" name="mod_day" value="" id="mod_day">
+                                            <input class="" type="hidden" name="TodayM" value="{{ TodayM }}" id="mod_TodayM">
+                                            <input class="" type="hidden" name="name" value="" id="mod_name">
+                                            <input class="" type="hidden" name="moim_name" value="{{ moim_name }}" id="mod_moim_name">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="mod_del">Delete</button>
+                            <button type="button" class="btn btn-primary" id="mod_save_change">Save changes</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 공지사항 모달 -->
+    <div class="modal fade" id="Btn_notice_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 공지사항</h4><!-- 공지사항 타이틀 -->
+                    <button class="btn btn-danger glyphicon glyphicon-plus pull-right" id = "notice_reg_btn" data-toggle="modal" data-target="#Btn_notice_reg_modal" >
+
+                    </button><!-- A02 공지사항 등록 버튼 클릭시 -->
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <div class="container">
+                        <div class="list-group">
+                            {% for notice_info_for in notice_info %}
+                                <li class="notice_toggle_div list-group-item" >
+                                    <a href="#" style=" width: 30px; color: #003399">{{ notice_info_for.notice_title|truncatechars:17 }}</a>
+                                    <span class="hidden" id="mod_title">{{ notice_info_for.notice_title }}</span>
+                                    <span class="hidden" id="mod_pk">{{ notice_info_for.pk }}</span>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-pencil pull-right" style="color: crimson" id="mod" data-toggle="modal" data-target="#Btn_notice_mod_modal" ></button>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-envelope pull-right" id="mod_email" style="margin-right:2px" data-toggle="modal" data-target="" ></button><br>
+                                    <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ notice_info_for.notice_textarea }}</textarea> <!-- A02 내용-->
+                                </li>
+                            {% empty %}
+                                공지사항이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="Notice_Save_Btn">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--############################################################추가수입 관련########################################################################################-->
+    <!--  A06-01 add_money_btn 버튼 모달  -->
+    <div class="modal fade" id="add_money_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 추가수입</h4>
+                    <button class="btn btn-danger glyphicon glyphicon-plus pull-right" id = "add_money_plus_btn" data-toggle="modal" data-target="#add_money_plus_btn_modal">
+                    </button>
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <div class="container">
+                        <div class="list-group">
+                            {% for add_moeny_for in add_moeny_object %}
+                                <li class="add_money_list_toggle list-group-item">
+                                    <a href="#" style=" width: 30px; color: #003399">{{ add_moeny_for.add_money_title|truncatechars:20 }}</a><br>
+                                    <span class="label label-info">금액 : {{ add_moeny_for.add_money }}</span>
+                                    <span class="hidden" id="add_money_title">{{ add_moeny_for.add_money_title }}</span>
+                                    <span class="hidden" id="add_moeny_pk">{{ add_moeny_for.pk }}</span>
+                                    <span class="hidden" id="add_moeny_money">{{ add_moeny_for.add_money }}</span>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-pencil pull-right" style="color: crimson" id="add_money_mod" data-toggle="modal" data-target="#Btn_add_money_mod_modal" ></button>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-envelope pull-right" id="add_money_mod_email" style="margin-right:2px" data-toggle="modal" data-target="" ></button><br>
+                                    <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ add_moeny_for.add_money_textarea }}</textarea>
+                                </li>
+                            {% empty %}
+                                추가 수입이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="add_money_save_btn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 추가수입 등록 + 클릭 A06-01-plus Modal   -->
+    <div class="modal fade" id="add_money_plus_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" id="dddd">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel">추가수입 등록</h4><!-- 추가수입 타이틀 -->
+
+                </div>
+                <div class="modal-body" >
+                    <form id="add_money_reg_form"
+                          action="/moim_detail_post/"
+                          method="post"><!-- 추가수입 등록 + 폼 -->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label><!-- 추가수입 제목 -->
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="add_moeny_reg_title_input" type="text" id="add_money_reg_title_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label><!-- 추가수입 내용 -->
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="add_money_reg_paticle_textarea" rows="10" type="text"id="add_money_reg_paticle_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">금액</label><!-- 추가수입 금액 -->
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="add_money_reg_money_input" type="text" id="add_money_reg_money_input_id" placeholder="금액">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}"><!-- 기본 post 모임이름 input 값-->
+                        <input type="hidden" name = "arrow" value="add_moeny_reg" id="arrow"><!-- 설정 post 방향값  input 값-->
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}"><!-- 기본 post 월 input 값-->
+                        <input type="hidden" name="name" value="">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="addd_money_save_reg_btn">Save changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 추가수입 수정 클릭 -->
+    <div class="modal fade" id="Btn_add_money_mod_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel">추가수입 수정</h4>
+
+                </div>
+                <div class="modal-body" >
+                    <form id="add_money_mod_reg_form2"
+                          action="/moim_detail_post/"
+                          method="post"><!--A02 notice_reg_form-->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="add_money_reg_mod_title_input" type="text" id="add_money_reg_title_mod_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label>
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="add_money_reg_mod_paticle_textarea" rows="10" type="text"id="add_money_reg_paticle_mod_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">금액</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="add_money_reg_mod_money_input" type="text" id="add_money_reg_money_mod_input_id" placeholder="금액">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name = "pk" value="" id="add_money_mod_pk_input">
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}">
+                        <input type="hidden" name = "arrow" value="add_money_reg_mod" id="add_money_reg_mod_arrow"><!--A03-->
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}">
+                        <input type="hidden" name = "name" value="">
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"id="add_money_Delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="add_moeny_Save_reg_Btn">Save changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--####################################################################################################################################################-->
+
+    <!--############################################################지출 관련########################################################################################-->
+    <!--  A06-02 consume_money_btn 버튼 모달  -->
+    <div class="modal fade" id="consume_money_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 지출</h4>
+                    <button class="btn btn-danger glyphicon glyphicon-plus pull-right" id = "comsume_money_plus_btn" data-toggle="modal" data-target="#consume_money_plus_btn_modal">
+                    </button>
+                </div>
+                <div class="modal-body" >
+                    <div class="container">
+                        <div class="list-group">
+                            {% for consume_money_for in consume_money_object %}
+                                <li class="consume_money_list_toggle list-group-item">
+                                    <a href="#" style=" width: 30px; color: #003399">{{ consume_money_for.withdraw_title|truncatechars:20 }}</a><br>
+                                    <span class="label label-info"> 금액 {{ consume_money_for.withdraw_money }}</span>
+                                    <span class="hidden" id="consume_money_title">{{ consume_money_for.withdraw_title }}</span>
+                                    <span class="hidden" id="consume_moeny_pk">{{ consume_money_for.pk }}</span>
+                                    <span class="hidden" id="consume_moeny_money">{{ consume_money_for.withdraw_money }}</span>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-pencil pull-right" style="color: crimson" id="consume_money_mod" data-toggle="modal" data-target="#Btn_consume_money_mod_modal" ></button>
+                                    <button class="btn btn-xs icon-angle-right glyphicon glyphicon-envelope pull-right" id="consume_money_mod_email" style="margin-right:2px" data-toggle="modal" data-target="" ></button><br>
+                                    <div>
+                                        <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ consume_money_for.withdraw_textarea }}</textarea>
+                                    </div>
+                                    {% if consume_money_for.receipt_img.url != "" %}
+                                        <div>
+                                            <img height="200" width="300" src="{{ consume_money_for.receipt_img.url }}"/><!--이미지 처리-->
+                                        </div>
+                                    {% endif %}
+                                </li>
+                            {% empty %}
+                                지출이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="consume_money_save_btn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 지출 등록 + 클릭 A06-02-plus Modal   -->
+    <div class="modal fade" id="consume_money_plus_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" id="dddd">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel">지출 등록</h4><!-- 추가수입 타이틀 -->
+
+                </div>
+                <div class="modal-body" >
+                    <form id="consume_money_reg_form"
+                          action="/moim_detail_post/"
+                          method="post"
+                          enctype="multipart/form-data"
+                            ><!-- 추가수입 등록 + 폼 -->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label><!-- 추가수입 제목 -->
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="consume_moeny_reg_title_input" type="text" id="consume_money_reg_title_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label><!-- 추가수입 내용 -->
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="consume_money_reg_paticle_textarea" rows="10" type="text"id="consume_money_reg_paticle_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">금액</label><!-- 추가수입 금액 -->
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="consume_money_reg_money_input" type="text" id="consume_money_reg_money_input_id" placeholder="금액">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">이미지</label><!-- 추가수입 금액 -->
+                            <div class="col-xs-10">
+                                <input class="form-control" name="consume_money_reg_img_input" type="file" id="consume_money_reg_money_img_id">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}"><!-- 기본 post 모임이름 input 값-->
+                        <input type="hidden" name = "arrow" value="consume_moeny_reg"><!-- 설정 post 방향값  input 값-->
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}"><!-- 기본 post 월 input 값-->
+                        <input type="hidden" name = "name" value="dd"><!-- 기본 post 월 input 값-->
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="consume_money_save_reg_btn">Save changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 추가수입 수정 클릭 -->
+    <div class="modal fade" id="Btn_consume_money_mod_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel">지출 수정</h4>
+
+                </div>
+                <div class="modal-body" >
+                    <form id="consume_money_mod_reg_form2"
+                          action="/moim_detail_post/"
+                          method="post"><!--A02 notice_reg_form-->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="consume_money_reg_mod_title_input" type="text" id="consume_money_reg_title_mod_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label>
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="consume_money_reg_mod_paticle_textarea" rows="10" type="text"id="consume_money_reg_paticle_mod_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">금액</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="consume_money_reg_mod_money_input" type="text" id="consume_money_reg_money_mod_input_id" placeholder="금액">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name = "pk" value="" id="consume_money_mod_pk_input">
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}">
+                        <input type="hidden" name = "arrow" value="consume_money_reg_mod" id="consume_money_reg_mod_arrow"><!--A03-->
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}">
+                        <input type="hidden" name = "name" value="">
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"id="consume_money_Delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="consume_moeny_Save_reg_Btn">Save changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--############################################################지출 관련########################################################################################-->
+
+
+    <!-- 공지사항 수정 클릭 A02-2-->
+    <div class="modal fade" id="Btn_notice_mod_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel"> 수정</h4><!-- 공지사항 타이틀 -->
+
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <form id="notice_reg_form2"
+                          action="/moim_detail_post/"
+                          method="post"><!--A02 notice_reg_form-->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="notice_reg_mod_title_input" type="text" id="notice_reg_title_mod_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label>
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="notice_reg_mod_paticle_textarea" rows="10" type="text"id="notice_reg_paticle_mod_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" name = "pk" value="" id="mod_pk_input">
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}">
+                        <input type="hidden" name = "arrow" value="notice_reg_mod" id="mod_arrow2"><!--A03-->
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}">
+                    </form>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"id="Btn_Notice_Delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="Notice_Save_reg_Btn">Save changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- 공지사항 수정 클릭끝-- A02-2-->
+
+    <!-- 공지사항 클릭 A01-01-Modal   -->
+    <div class="modal fade" id="Btn_notice_reg_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" id="dddd">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="glyphicon glyphicon-align-justify" id="myModalLabel"> 등록</h4><!-- 공지사항 타이틀 -->
+
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <form id="notice_reg_form"
+                          action="/moim_detail_post/"
+                          method="post"><!--A02 -->
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">제목</label>
+                            <div class="col-xs-10">
+                                <input class="form-control" required="True" name="notice_reg_title_input" type="text" id="notice_reg_title_input_id" placeholder="제목">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xs-2 form-control-static">내용</label>
+                            <div class="col-xs-10">
+                                <textarea class="form-control" required="True" name="notice_reg_paticle_textarea" rows="10" type="text"id="notice_reg_paticle_textarea_id" placeholder="내용"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" name = "moim_name" value="{{ moim_name }}">
+                        <input type="hidden" name = "arrow" value="notice_reg" id="arrow">
+                        <input type="hidden" name = "TodayM" value="{{ TodayM }}">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="Notice_Save_reg_Btn">Save changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div><!-- 공지사항 수정 클릭-->
+
+
+
+{% elif User == 'True' %} <!-- 유저일때 권한  -->
+    <!--############################################################공지사항 관련########################################################################################-->
+    <!-- 공지사항 모달 -->
+    <div class="modal fade" id="Btn_notice_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 공지사항</h4><!-- 공지사항 타이틀 -->
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <div class="container">
+                        <div class="list-group">
+                            {% for notice_info_for in notice_info %}
+                                <li class="notice_toggle_div list-group-item" >
+                                    <a href="#" style=" width: 30px; color: #003399">{{ notice_info_for.notice_title|truncatechars:17 }}</a><br>
+                                    <span class="hidden" id="mod_title">{{ notice_info_for.notice_title }}</span>
+                                    <span class="hidden" id="mod_pk">{{ notice_info_for.pk }}</span>
+                                    <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ notice_info_for.notice_textarea }}</textarea> <!-- A02 내용-->
+                                </li>
+                            {% empty %}
+                                공지사항이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--############################################################추가수입 관련########################################################################################-->
+    <!-- A06-01 add_money_btn 버튼 모달 -->
+    <div class="modal fade" id="add_money_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 추가수입</h4>
+                </div>
+                <div class="modal-body" ><!-- 공지사항 바디 -->
+                    <div class="container">
+                        <div class="list-group">
+                            {% for add_moeny_for in add_moeny_object %}
+                                <li class="add_money_list_toggle list-group-item">
+                                    <a href="#" style=" width: 30px; color: #003399">{{ add_moeny_for.add_money_title|truncatechars:20 }}</a><br>
+                                    <span class="label label-info">금액 : {{ add_moeny_for.add_money }}</span><br>
+                                    <span class="hidden" id="add_money_title">{{ add_moeny_for.add_money_title }}</span>
+                                    <span class="hidden" id="add_moeny_pk">{{ add_moeny_for.pk }}</span>
+                                    <span class="hidden" id="add_moeny_money">{{ add_moeny_for.add_money }}</span>
+                                    <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ add_moeny_for.add_money_textarea }}</textarea>
+                                </li>
+                            {% empty %}
+                                추가 수입이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--####################################################################################################################################################-->
+
+    <!--############################################################지출 관련########################################################################################-->
+    <!-- A06-02 consume_money_btn 버튼 모달 -->
+    <div class="modal fade" id="consume_money_btn_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 20px 20px ">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="" id="myModalLabel"> 지출</h4>
+                </div>
+                <div class="modal-body" >
+                    <div class="container">
+                        <div class="list-group">
+                            {% for consume_money_for in consume_money_object %}
+                                <li class="consume_money_list_toggle list-group-item">
+                                    <a href="#" style=" width: 30px; color: #003399">{{ consume_money_for.withdraw_title|truncatechars:20 }}</a><br>
+                                    <span class="label label-info">금액 : {{ consume_money_for.withdraw_money }}</span>
+                                    <span class="hidden" id="consume_money_title">{{ consume_money_for.withdraw_title }}</span>
+                                    <span class="hidden" id="consume_moeny_pk">{{ consume_money_for.pk }}</span>
+                                    <span class="hidden" id="consume_moeny_money">{{ consume_money_for.withdraw_money }}</span>
+                                    <div>
+                                        <textarea rows="10" cols="50" id ="textarea" readonly style="font-size: 10px;margin-left: 10px; resize: none;"> {{ consume_money_for.withdraw_textarea }}</textarea>
+                                    </div>
+                                    {% if consume_money_for.receipt_img.url != "" %}
+                                        <div>
+                                            <img height="200" width="300" src="{{ consume_money_for.receipt_img.url }}"/><!--이미지 처리-->
+                                        </div>
+                                    {% endif %}
+                                </li>
+                            {% empty %}
+                                지출이 없습니다.
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="consume_money_save_btn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--############################################################지출 관련###############################-->
+
+{% endif %}
+
+
+<!-- 날짜 버튼 클릭 관리자/user 권한 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">선택 년월</h4>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <div class="container"  >
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4 btn glyphicon glyphicon-plus" id="year_plus"></div>
+                            <div class="col-xs-4 btn glyphicon glyphicon-plus" id="month_plus"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4" id="year_val">{{ year }}</div>
+                            <div class="col-xs-4" id="month_val">{{ month }}</div>
+                            <div class="col-xs-4" style="text-align: left"><button class="btn btn-xs" id="dangwol" style="color: red" >당월</button></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4 btn glyphicon glyphicon-minus" id="year_minus"></div>
+                            <div class="col-xs-4 btn glyphicon glyphicon-minus" id="month_minus"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="save_change">Save changes</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% comment %}
+                {% if Moim_name.manager == True %}
+                    <li>관리자: {{ Moim_name.user_name }}</li>
+                {% else %}
+                    <li>{{ Moim_name.user_name }}</li>
+                {% endif %}
+
+    <!-- {% comment %} 템플릿 태그는 템플릿의 블록 주석입니다. -->
+    <!-- 이 템플릿 g
+
+    그 안에 있는 모든 내용은 화면에 출력되지 앟습니다. -->
+
+    {% for field in form %}
+    <p>
+        {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {{field}}
+    </p>
+    {% endfor %}
+    {% endcomment %}
+
+
+
+{% endblock %}

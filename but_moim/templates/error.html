@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+  {{ error }}
+
+
+
+    {% comment %}
+    <input type="hidden" name="title" value="{{ source.title }}">
+    request.POST.get("title", "")
+
+
+
+    <form action="/your-name/" method="post">
+    <label for="your_name">Your name: </label>
+    <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
+    <input type="submit" value="OK">
+<   /form>
+
+    <!-- {% comment %} 템플릿 태그는 템플릿의 블록 주석입니다. -->
+    <!-- 이 템플릿 g
+
+    그 안에 있는 모든 내용은 화면에 출력되지 앟습니다. -->
+
+    {% for field in form %}
+    <p>
+        {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {{field}}
+    </p>
+    {% endfor %}
+    {% endcomment %}
+
+
+{% endblock %}

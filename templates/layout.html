@@ -1,0 +1,28 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <title>{% block page_title %}Pystagram{% endblock %}</title>
+    <meta charset="utf-8">
+    <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet"/>
+    <link href="{% static "bootstrap/css/bootstrap-responsive.css"%}" rel="stylesheet"/>
+    <link href="{% static "bootstrap/js/datepicker3.css"%}" rel="stylesheet" />
+    <link href="{% static "css/extra.css"%}" rel="stylesheet" />
+    <script src="{% static "js/jquery-2.2.0.min.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap-datepicker.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap-datepicker.kr.js" %}"></script>
+    <script src="{% static "js/extra.js" %}"></script>
+    <script src="{% static "js/important.js" %}"></script>
+    <script src="{% static "js/jquery/jquery.blockUI.js" %}"></script>
+
+
+</head>
+
+
+<body>
+{% block content %}{% endblock %}
+</body>
+
+</html>

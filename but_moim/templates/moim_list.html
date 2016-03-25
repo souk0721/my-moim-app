@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <script>
+        window.onkeydown = function() {
+            var kcode = event.keyCode;
+            if(kcode == 116) event.returnValue = false;
+        }
+    </script>
+    <div class="container" style="display: inline-block;text-align: right;">
+        <div class="row">
+            <div class="input-group col-xs-12">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                <span class="form-control" style="text-align: center">{{request.user.username }}</span>
+
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <a class="form-control" style="text-align: center"  href="{% url 'logout' %}">logout</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group col-xs-12">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-plus"></span></span>
+                <a class="form-control" style="text-align: center" href="{% url 'moim_join' %}">신규 모임추가</a>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <a class="form-control" style="text-align: center" href="{% url 'moim_search' %}">모임 검색</a>
+            </div>
+        </div><br><br>
+        {% for User_info in user_info %}
+            <div class="container" style="border:groove;">
+                <div class="row">
+                    <a class="" href="/moim_detail/{{ User_info.moim_name.moim_name }} ">
+                        <div class="col-xs-12 btn moim_list_btn_detail" style="text-align: center">
+                            {% for Moim_info in moim_info %}
+                                {% if User_info.moim_name.moim_name == Moim_info.moim_name and Moim_info.moim_symbol != "" %}
+                                    <img src="{{ Moim_info.moim_symbol.url }}" width="150px" height="200px"/><br>
+                                {% elif User_info.moim_name.moim_name == Moim_info.moim_name and Moim_info.moim_symbol == "" %}
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D" width="150px" height="200px"/><br>
+                                {% endif %}
+                            {% endfor %}
+                            <div style="background: black; height: 1px" ></div><br>
+                    </a>{{ User_info.moim_name.moim_name }}
+                </div>
+            </div>
+            </div><br>
+        {% empty %}
+            <div class="col-xs-12 "style="text-align: center">
+                <span class="label label-warning" style= "font-size: larger" >가입한 모임이 없습니다.</span>
+            </div>
+        {% endfor %}
+
+{% endblock %}

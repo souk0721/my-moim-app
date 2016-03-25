@@ -1,0 +1,85 @@
+
+{% extends 'layout.html' %}
+
+{% block content %}
+    <style>
+        .modal-header, h4, .close {
+            background-color: #5cb85c;
+            color:white !important;
+            text-align: center;
+            font-size: 30px;
+        }
+        .modal-footer {
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+
+            $("#myModal").modal();
+        });
+    </script>
+
+    <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;">
+                        <h4><span class="glyphicon glyphicon-lock"></span> 모임추가</h4>
+                    </div>
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <form method="post" enctype="multipart/form-data" class="form-horizontal" action="{% url 'moim_join' %}">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label for="moim_name"><span class="glyphicon glyphicon-user"></span> 모임이름</label>
+                                {{ form.moim_name }}
+                                <span class="field-error">{{ form.moim_name.errors|striptags }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="moim_deposit_date"><span class="glyphicon glyphicon-eye-open"></span> 입금날짜</label>
+                                {{ form.moim_deposit_date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="moim_account_bank"><span class="glyphicon glyphicon-envelope"></span> 모임 은행 </label>
+                                {{ form.moim_account_bank }}
+                            </div>
+                            <div class="form-group">
+                                <label for="moim_account_name"><span class="glyphicon glyphicon-eye-open"></span>계좌 주인이름</label>
+                                {{ form.moim_account_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="moim_account_num"><span class="glyphicon glyphicon-eye-open"></span>계좌 번호</label>
+                                {{ form.moim_account_num }}
+                            </div>
+                            <div class="form-group">
+                                <label for="moim_total_money"><span class="glyphicon glyphicon-eye-open"></span>총 계좌금액</label>
+                                {{ form.moim_total_money }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="deposit_amount"><span class="glyphicon glyphicon-eye-open"></span>월정기금액</label>
+                                {{ form.deposit_amount }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="moim_symbol"><span class="glyphicon glyphicon-eye-open"></span>모임 심볼</label>
+                                <input class="" name="moim_symbol" type="file" placeholde ='총 모임금액',>
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> 모임추가</button>
+                            </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="submit" class="btn btn-danger btn-default pull-right" href="{% url 'moim_list' %}" ><span class="glyphicon glyphicon-remove"></span> Cancel</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
