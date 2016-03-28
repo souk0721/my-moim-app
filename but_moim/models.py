@@ -18,7 +18,7 @@ class moim_info(models.Model): #모임 정보 테이블
     moim_total_money = models.IntegerField(default=0)
     moim_total_money2 = models.IntegerField(default=0)
     moim_code = models.AutoField(primary_key=True)
-    moim_symbol = models.ImageField(width_field=None,height_field=None,blank=True)
+    moim_symbol = models.ImageField(width_field=None,height_field=None,blank=True,upload_to='static_files/uploaded_files/moim_symbol/%Y/%m/%d')
     moim_person_count = models.IntegerField(default=1)
     deposit_amount = models.IntegerField(default=0)
      #def get_absolute_url(self):
@@ -66,7 +66,7 @@ class withdraw_info(models.Model): #출금정보 테이블
     withdraw_money=models.IntegerField(default=0)#지출금액
     withdraw_title=models.CharField(max_length=100)#지출내역
     withdraw_textarea = models.TextField(max_length=2000,blank=True)
-    receipt_img = models.ImageField(blank=True)
+    receipt_img = models.ImageField(blank=True,upload_to='static_files/uploaded_files/receipt/%Y/%m/%d')
     withdraw_date_day = models.CharField(null=True, blank=True,max_length=100, default=datetime.now)
 
     def __unicode__(self):
